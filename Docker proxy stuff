@@ -1,0 +1,33 @@
+FROM ubuntu:13.10
+ENV HTTP_PROXY <HTTP_PROXY>
+ENV HTTPS_PROXY <HTTPS_PROXY>
+RUN export http_proxy=$HTTP_PROXY
+RUN export https_proxy=$HTTPS_PROXY
+RUN apt-get update && apt-get upgrade
+
+
+before any apt-get command in your Dockerfile you should put this line
+
+COPY apt.conf /etc/apt/apt.conf
+
+Dont'f forget to create apt.conf in the same folder that you have the Dockerfile, the content of the apt.conf file should be like this:
+
+Acquire::socks::proxy "socks://YOUR-PROXY-IP:PORT/";
+Acquire::http::proxy "http://YOUR-PROXY-IP:PORT/";
+Acquire::https::proxy "http://YOUR-PROXY-IP:PORT/";
+
+
+	
+ 
+Dockerfile:
+
+ADD script.sh /tmp/script.sh
+RUN /tmp/script.sh
+script.sh:
+
+if ping -c 1 google.com ; then
+    echo "direct internet  "
+else
+    echo "proxy environment detected setting proxy"
+    export http_proxy=<proxy address>
+fi
