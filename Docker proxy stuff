@@ -31,3 +31,15 @@ else
     echo "proxy environment detected setting proxy"
     export http_proxy=<proxy address>
 fi
+
+
+
+
+
+FROM ubuntu
+RUN echo 'Acquire::http { Proxy "http://my.proxy.net:8000"; };' >> /etc/apt/apt.conf.d/01proxy
+ENV HTTP_PROXY http://my.proxy.net:8000
+ENV http_proxy http://my.proxy.net:8000
+ENV HTTPS_PROXY https://my.proxy.net:8000
+ENV https_proxy https://my.proxy.net:8000
+RUN apt-get update && apt-get install -y build-essential
